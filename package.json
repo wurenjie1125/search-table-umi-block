@@ -9,7 +9,7 @@
   },
   "repository":{
     "type": "git",
-    "url": "https://git.zhonganinfo.com/za-wurenjie/umi-search-table"
+    "url": "https://github.com/wurenjie1125/search-table-umi-block"
   },
   "scripts": {
     "dev": "umi dev"
