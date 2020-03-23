@@ -14,7 +14,7 @@ export default function () {
       tableRef && tableRef.current.search();
     };
     return (
-      <Fragment>
+      <div style={{marginBottom:'20px'}}>
         <Form layout="inline">
           <Form.Item label="姓名">
             {getFieldDecorator('name', {
@@ -38,7 +38,7 @@ export default function () {
           </Form.Item>
         </Form>
 
-      </Fragment>
+      </div>
     );
   });
 
@@ -57,7 +57,7 @@ export default function () {
   ];
 
   return (
-    <div>
+    <div style={{padding:'20px'}}>
       <Table
         ref={tableRef}
         initQuery

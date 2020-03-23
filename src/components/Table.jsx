@@ -83,18 +83,28 @@ class ClassicTable extends React.Component {
   search = (searchParams) => {
     const {pageName, pageSizeName} = this.props;
     const { queryData } = this.props;
-    this.setState({ loading: true }, () => {
-      queryData
-        && queryData({
-          pagination: {
-            [pageName]: searchParams[pageName] ? searchParams[pageName] : this.state.pagination.current,
-            [pageSizeName]: searchParams[pageSizeName] ? searchParams[pageSizeName] : this.state.pagination.pageSize,
-          },
-          ...searchParams,
-        }).then(res => {
+    this.setState({ loading: true });
+    let params = null;
+    if (searchParams) {
+      params = {
+        pagination: {
+          [pageName]: searchParams[pageName] ? searchParams[pageName] : this.state.pagination.current,
+          [pageSizeName]: searchParams[pageSizeName] ? searchParams[pageSizeName] : this.state.pagination.pageSize,
+        },
+        ...searchParams,
+      };
+    } else {
+      params = {
+        pagination: {
+          [pageName]: this.state.pagination.current,
+          [pageSizeName]: this.state.pagination.pageSize,
+        },
+      };
+    }
+    queryData
+        && queryData(params).then(res => {
           this.handleQueryData(res);
         });
-    });
   };
 
   onChange = (pagination, filters, sorter, extra) => {
