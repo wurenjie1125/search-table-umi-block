@@ -5,7 +5,7 @@
 ## Usage
 
 ```sh
-umi block https://git.zhonganinfo.com/za-wurenjie/umi-search-table/tree/dev
+umi block https://github.com/wurenjie1125/search-table-umi-block
 ```
 
 ## LICENSE
