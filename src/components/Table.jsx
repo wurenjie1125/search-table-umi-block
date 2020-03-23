@@ -179,5 +179,6 @@ ClassicTable.defaultProps = {
   pageName: 'pageNum',
   pageSizeName: 'pageSize',
   defaultPageSize: 10,
+  initQuery: true
 };
 export default ClassicTable;
