@@ -1,0 +1,26 @@
+{
+  "name": "@umi-block/umi-search-table",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/index.js",
+  "authors": {
+    "name": "",
+    "email": ""
+  },
+  "repository":{
+    "type": "git",
+    "url": "https://git.zhonganinfo.com/za-wurenjie/umi-search-table"
+  },
+  "scripts": {
+    "dev": "umi dev"
+  },
+  "dependencies": {
+    "react": ">=16.0.0",
+    "antd": "^3.24.0"
+  },
+  "devDependencies": {
+    "umi": "^2.9.0",
+    "umi-plugin-block-dev": "^2.0.0"
+  },
+  "license": "MIT"
+}
