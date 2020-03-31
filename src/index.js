@@ -81,11 +81,18 @@ export default function () {
               ],
             });
           });
-          // return queryMediaAcctPage({
-          //   acctNo: 'AC202002241834294114',
-          //   ...pagination,
-          //   ...searchKey,
+          // return new Promise((resolve) => {
+          //   queryMediaAcctPage({
+          //     acctNo: 'AC202002241834294114',
+          //     ...pagination,
+          //     ...searchKey,
+          //   }).then(res => {
+          //     if(res.success){
+          //       resolve(data)
+          //     }
+          //   })
           // });
+         
         }}
       />
     </div>

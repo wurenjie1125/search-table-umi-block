@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from 'antd';
-import { thousandToFormat } from '../utils/util.js';
-import createEnhancedSearchForm from '../utils/createEnhancedSearchForm';
+import { thousandToFormat } from './utils/util.js';
+import createEnhancedSearchForm from './utils/createEnhancedSearchForm';
 /**
  * props:
  * initQuery: Boolean 加载后是否自动查询
@@ -54,27 +54,23 @@ class ClassicTable extends React.Component {
   }
 
   handleQueryData = res => {
-    if (res.success) {
-      res
-        && res.data
-        && res.data.forEach(item => {
-          for (const i in item) {
-            if (typeof item[i] === 'number' && !isNaN(item[i])) {
-              item[i] = thousandToFormat(
-                item[i],
-                this.props.maximumFractionDigits,
-              );
-            }
+    if (Array.isArray(res)) {
+      res.forEach(item => {
+        for (const i in item) {
+          if (typeof item[i] === 'number' && !isNaN(item[i])) {
+            item[i] = thousandToFormat(
+              item[i],
+              this.props.maximumFractionDigits,
+            );
           }
-        });
-
+        }
+      });
       this.setState({
         loading: false,
         data: {
           list:
             res
-            && res.data
-            && res.data.map((item, index) => ({ ...item, key: index })),
+            && res.map((item, index) => ({ ...item, key: index })),
         },
       });
     }
@@ -158,11 +154,15 @@ class ClassicTable extends React.Component {
     );
     return (
       <React.Fragment>
+        {
+          EnhancedSearchForm && (
+          <EnhancedSearchForm
+            ref={ref => this.searchFormRef = ref}
+            onSearchSubmit={this.onSearchSubmit}
+          />
+          )
+        }
 
-        <EnhancedSearchForm
-          ref={ref => this.searchFormRef = ref}
-          onSearchSubmit={this.onSearchSubmit}
-        />
         <Table
           loading={loading}
           dataSource={data.list}
@@ -179,6 +179,6 @@ ClassicTable.defaultProps = {
   pageName: 'pageNum',
   pageSizeName: 'pageSize',
   defaultPageSize: 10,
-  initQuery: true
+  initQuery: true,
 };
 export default ClassicTable;
