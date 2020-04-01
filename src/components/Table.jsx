@@ -19,9 +19,7 @@ class ClassicTable extends React.Component {
         current: 1,
         pageSize: 10,
       },
-      data: {
-        list: [],
-      },
+      data: [],
       loading: true,
       params: {},
       searchKey: {},
@@ -41,21 +39,21 @@ class ClassicTable extends React.Component {
 
     if (initQuery) {
       queryData
-        && queryData({
-          ...searchKey,
-          pagination: {
-            [pageName]: 1,
-            [pageSizeName]: defaultPageSize,
-          },
-        }).then(res => {
-          this.handleQueryData(res);
-        });
+      && queryData({
+        ...searchKey,
+        pagination: {
+          [pageName]: 1,
+          [pageSizeName]: defaultPageSize,
+        },
+      }).then(res => {
+        this.handleQueryData(res);
+      });
     }
   }
 
-  handleQueryData = res => {
-    if (Array.isArray(res)) {
-      res.forEach(item => {
+  handleQueryData = ({data = [], total}) => {
+    if (Array.isArray(data)) {
+      data.forEach(item => {
         for (const i in item) {
           if (typeof item[i] === 'number' && !isNaN(item[i])) {
             item[i] = thousandToFormat(
@@ -67,36 +65,29 @@ class ClassicTable extends React.Component {
       });
       this.setState({
         loading: false,
-        data: {
-          list:
-            res
-            && res.map((item, index) => ({ ...item, key: index })),
-        },
+        data: data.map((item, index) => ({ ...item, key: index })),
+        pagination: {...this.state.pagination, total},
       });
     }
   };
 
-  search = (searchParams) => {
+  search = (searchParams = {}) => {
     const {pageName, pageSizeName} = this.props;
     const { queryData } = this.props;
-    this.setState({ loading: true });
-    let params = null;
-    if (searchParams) {
-      params = {
-        pagination: {
-          [pageName]: searchParams[pageName] ? searchParams[pageName] : this.state.pagination.current,
-          [pageSizeName]: searchParams[pageSizeName] ? searchParams[pageSizeName] : this.state.pagination.pageSize,
-        },
-        ...searchParams,
-      };
-    } else {
-      params = {
-        pagination: {
-          [pageName]: this.state.pagination.current,
-          [pageSizeName]: this.state.pagination.pageSize,
-        },
-      };
-    }
+    const params = {
+      pagination: {
+        [pageName]: searchParams[pageName] ? searchParams[pageName] : this.state.pagination.current,
+        [pageSizeName]: searchParams[pageSizeName] ? searchParams[pageSizeName] : this.state.pagination.pageSize,
+      },
+      ...searchParams,
+    };
+    this.setState({
+      pagination: {
+        current: params.pagination[pageName],
+        pageSize: params.pagination[pageSizeName],
+      },
+      loading: true,
+    });
     queryData
         && queryData(params).then(res => {
           this.handleQueryData(res);
@@ -106,8 +97,8 @@ class ClassicTable extends React.Component {
   onChange = (pagination, filters, sorter, extra) => {
     this.setState({
       pagination: {
+        ...this.state.pagination,
         current: pagination.current,
-        pageSize: this.state.pagination.pageSize,
       },
     });
     this.props.queryData
@@ -148,26 +139,28 @@ class ClassicTable extends React.Component {
   };
 
   render() {
-    const { data, loading } = this.state;
+    const { data, loading, pagination} = this.state;
     const EnhancedSearchForm = createEnhancedSearchForm(
       this.props.CustomSearchForm,
     );
+    const { hasTotalRow } = this.props;
     return (
       <React.Fragment>
-        {
-          EnhancedSearchForm && (
+        { EnhancedSearchForm && (
           <EnhancedSearchForm
             ref={ref => this.searchFormRef = ref}
             onSearchSubmit={this.onSearchSubmit}
           />
-          )
-        }
-
+        )}
         <Table
           loading={loading}
-          dataSource={data.list}
+          dataSource={data}
           onChange={this.onChange}
-          pagination={this.state.pagination}
+          pagination={{
+            current: pagination.current,
+            pageSize: hasTotalRow ? pagination.pageSize + 1 : pagination.pageSize,
+            total: hasTotalRow ? pagination.total + 1 : pagination.total,
+          }}
           {...this.props}
         />
       </React.Fragment>
@@ -180,5 +173,6 @@ ClassicTable.defaultProps = {
   pageSizeName: 'pageSize',
   defaultPageSize: 10,
   initQuery: true,
+  hasTotalRow: false,
 };
 export default ClassicTable;
